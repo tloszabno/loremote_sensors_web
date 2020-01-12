@@ -12,14 +12,3 @@ export interface MeasurementsSet {
   timestamp: Date;
   id: string;
 }
-
-export interface SensorValue {
-  sensor_name: string;
-  value: number;
-  unit: string;
-}
-
-export interface Measurements {
-  measurement_name: string;
-  sensor_values: SensorValue[];
-}

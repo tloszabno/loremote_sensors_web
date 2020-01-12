@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { MeasurementsSet, SensorValue } from "./SensorTypes";
-import { SensorPanel } from "./SensorPanel";
+import { MeasurementsSet, Measurement } from "./SensorTypes";
+import { SensorBadge } from "./SensorBadge";
+import { SensorsBoardDiv } from "./SensorsBoard.styled";
 
 export const SensorsBoard: React.FC = () => {
-  const [data, setData] = useState<{ [id: string]: SensorValue[] }>({});
+  const [data, setData] = useState<{ [id: string]: Measurement[] }>({});
   useEffect(() => {
     fetch("/api/measurements/1")
       .then(res => res.json())
-      .then(data => groupByMeasurementName(data.data[0]))
+      .then(data => groupBySensorName(data.data[0]))
       .then(data => setData(data));
   }, []);
   return (
-    <div>
+    <SensorsBoardDiv>
       {Object.keys(data).map(key => (
-        <SensorPanel key={`${key}-sensor-panel`} name={key} values={data[key]} />
+        <SensorBadge key={`${key}-sensor-panel`} name={key} values={data[key]} />
       ))}
-    </div>
+    </SensorsBoardDiv>
   );
 };
 
-const groupByMeasurementName = (
+const groupBySensorName = (
   measurementSet: MeasurementsSet
-): { [id: string]: SensorValue[] } => {
-  const by_name: { [id: string]: SensorValue[] } = {};
+): { [id: string]: Measurement[] } => {
+  const by_name: { [id: string]: Measurement[] } = {};
 
   measurementSet.measurements.forEach(measurement => {
-    const measurement_name = measurement.measurement_name;
-    if (!(measurement_name in by_name)) {
-      by_name[measurement_name] = [];
+    const sensor_name = measurement.sensor_name;
+    if (!(sensor_name in by_name)) {
+      by_name[sensor_name] = [];
     }
 
-    by_name[measurement_name].push(measurement);
+    by_name[sensor_name].push(measurement);
   });
 
   return by_name;
