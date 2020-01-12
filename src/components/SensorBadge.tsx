@@ -1,6 +1,6 @@
 import React from "react";
 import { Measurement } from "./SensorTypes";
-import { Card, CardHeader, CardBody, CardText, Table } from "reactstrap";
+import { Card, CardHeader, CardBody, Table } from "reactstrap";
 import { SensorBadgeDiv, NameSpan } from "./SensorBadge.styled";
 
 interface Props {
@@ -12,13 +12,13 @@ export const SensorBadge: React.FC<Props> = ({ name, values }) => {
   return (
     <SensorBadgeDiv>
       <Card>
-        <CardHeader><NameSpan>{name}</NameSpan></CardHeader>
+        <CardHeader>
+          <NameSpan>{name}</NameSpan>
+        </CardHeader>
         <CardBody>
-          <CardText>
-            <Table responsive borderless>
-              <tbody>{values.map(value => toRow(name, value))}</tbody>
-            </Table>
-          </CardText>
+          <Table responsive borderless>
+            <tbody>{values.map(value => toRow(name, value))}</tbody>
+          </Table>
         </CardBody>
       </Card>
     </SensorBadgeDiv>
@@ -27,7 +27,9 @@ export const SensorBadge: React.FC<Props> = ({ name, values }) => {
 
 const toRow = (name: string, value: Measurement): JSX.Element => (
   <tr key={`${name}-${value.measurement_name}-row`}>
-    <td><NameSpan>{value.measurement_name}</NameSpan></td>
+    <td>
+      <NameSpan>{value.measurement_name}</NameSpan>
+    </td>
     <td>
       {value.value} {value.unit}
     </td>

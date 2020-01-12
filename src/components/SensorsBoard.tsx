@@ -3,18 +3,37 @@ import { MeasurementsSet, Measurement } from "./SensorTypes";
 import { SensorBadge } from "./SensorBadge";
 import { SensorsBoardDiv } from "./SensorsBoard.styled";
 
+const INTERVAL_IN_MS = 1* 60 * 1000;
+
 export const SensorsBoard: React.FC = () => {
   const [data, setData] = useState<{ [id: string]: Measurement[] }>({});
+  const [reload, setReload] = useState<boolean>(true);
   useEffect(() => {
-    fetch("/api/measurements/1")
-      .then(res => res.json())
-      .then(data => groupBySensorName(data.data[0]))
-      .then(data => setData(data));
+    if (reload) {
+      fetch("/api/measurements/1")
+        .then(res => res.json())
+        .then(data => groupBySensorName(data.data[0]))
+        .then(data => {
+          setData(data);
+          setReload(false);
+        });
+    }
+  }, [reload]);
+
+  useEffect(() => {
+    setInterval(() => {
+      setReload(true);
+    }, INTERVAL_IN_MS);
   }, []);
+
   return (
     <SensorsBoardDiv>
       {Object.keys(data).map(key => (
-        <SensorBadge key={`${key}-sensor-panel`} name={key} values={data[key]} />
+        <SensorBadge
+          key={`${key}-sensor-panel`}
+          name={key}
+          values={data[key]}
+        />
       ))}
     </SensorsBoardDiv>
   );
